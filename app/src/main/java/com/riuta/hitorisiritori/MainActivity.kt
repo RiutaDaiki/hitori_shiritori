@@ -23,8 +23,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
+        
         setContent {
             HITORISIRITORITheme {
                 Surface(color = MaterialTheme.colors.background) {
@@ -48,7 +47,7 @@ class MainActivity : ComponentActivity() {
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(viewModel.lastWord.value, fontSize = 35.sp)
+            Text(viewModel.lastWord.value ?: "", fontSize = 35.sp)
         }
     }
 
@@ -68,10 +67,8 @@ class MainActivity : ComponentActivity() {
                 onValueChange = { newValue ->
                     viewModel.onTextFieldChanged(newValue)
                 },
-                //keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii)
             )
         }
-
     }
 
     @Composable
@@ -88,8 +85,11 @@ class MainActivity : ComponentActivity() {
             Button(
                 onClick = {
                     if (textFieldValue.takeLast(1) != "ん" && textFieldValue.length > 1){
+                        println("textField$textFieldValue")
+                        println("last$lastWord")
+                        println("ヴィヴィv")
                         viewModel.updateLastWord(textFieldValue)
-                        viewModel.onTextFieldChanged(lastWord.takeLast(1))
+                        viewModel.onTextFieldChanged(lastWord?.takeLast(1) ?: textFieldValue.takeLast(1))
                         effectSound(correct)
                     } else if(textFieldValue.length < 2) effectSound(not_hiragana)
                     else effectSound(incorrect)
@@ -99,7 +99,6 @@ class MainActivity : ComponentActivity() {
                 Text(text = "Button")
             }
         }
-
     }
 
     @Preview(showBackground = true)

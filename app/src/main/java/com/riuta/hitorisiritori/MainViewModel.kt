@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 class MainViewModel: ViewModel() {
     val query = mutableStateOf("")
 
-    val lastWord = mutableStateOf("")
+    val lastWord = mutableStateOf<String?>(null)
 
     fun onTextFieldChanged(query: String){
         this.query.value = query
