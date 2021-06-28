@@ -1,19 +1,28 @@
 package com.riuta.hitorisiritori
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.res.ResourcesCompat
 import com.riuta.hitorisiritori.ui.theme.HITORISIRITORITheme
+import org.intellij.lang.annotations.JdkConstants
 
 
 class MainActivity : ComponentActivity() {
@@ -23,13 +32,14 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         setContent {
             HITORISIRITORITheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    SimpleFilledTextFieldSample()
+                    SimpleFilledTextField()
                     button()
                     text()
+                    image(resource = 1)
                 }
             }
         }
@@ -41,55 +51,59 @@ class MainActivity : ComponentActivity() {
         player.start()
     }
 
+    fun convertToBitmap(resource: Int): Bitmap{
+        return BitmapFactory.decodeResource(resources, resource)
+    }
+
     @Composable
     fun text(){
         Column(
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(viewModel.lastWord.value ?: "", fontSize = 35.sp)
-        }
+        ) { Text(viewModel.lastWord) }
     }
 
     @Composable
-    fun SimpleFilledTextFieldSample() {
-        val query = viewModel.query.value
+    fun SimpleFilledTextField() {
+        val query = viewModel.textFieldValue
 
         Column (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 70.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-
                 ){
             TextField(
                 value = query,
-                onValueChange = { newValue ->
-                    viewModel.onTextFieldChanged(newValue)
-                },
+                onValueChange = { viewModel.updateTextField(it) },
             )
         }
     }
 
     @Composable
+    fun image(resource: Int){
+        Column(
+            Modifier.padding(top = 120.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(convertToBitmap(R.drawable.angry_fukureru_boy).asImageBitmap(), "", Modifier.padding(60.dp))
+        }
+    }
+
+    @Composable
     fun button(){
-        val textFieldValue = viewModel.query.value
-        val lastWord = viewModel.lastWord.value
+        val textFieldValue = viewModel.textFieldValue
+        val lastWord = viewModel.lastWord
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center,
+                .fillMaxHeight().padding(top = 500.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
                 onClick = {
-                    if (textFieldValue.takeLast(1) != "ん" && textFieldValue.length > 1){
-                        println("textField$textFieldValue")
-                        println("last$lastWord")
-                        println("ヴィヴィv")
-                        viewModel.updateLastWord(textFieldValue)
-                        viewModel.onTextFieldChanged(lastWord?.takeLast(1) ?: textFieldValue.takeLast(1))
+                    if(textFieldValue.takeLast(1) != "ん" && textFieldValue.length > 1){
+                        viewModel.updateTextField(viewModel.updateLastWord(textFieldValue).takeLast(1))
                         effectSound(correct)
                     } else if(textFieldValue.length < 2) effectSound(not_hiragana)
                     else effectSound(incorrect)
@@ -105,7 +119,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun DefaultPreview() {
         HITORISIRITORITheme {
-            SimpleFilledTextFieldSample()
+            SimpleFilledTextField()
             button()
             text()
         }
