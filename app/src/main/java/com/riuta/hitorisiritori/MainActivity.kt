@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     SimpleFilledTextField()
                     button()
                     text()
-                    image(resource = 1)
+//                    image(resource = 1)
                 }
             }
         }
@@ -63,9 +63,9 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun text(){
         Column(
-            Modifier.fillMaxSize(),
+            Modifier.fillMaxSize().padding(top = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        ) { Text(viewModel.lastWord) }
+        ) { Text(viewModel.lastWord, fontSize = 25.sp) }
     }
 
     @Composable
@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(top = 500.dp),
+                .padding(top = 250.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
