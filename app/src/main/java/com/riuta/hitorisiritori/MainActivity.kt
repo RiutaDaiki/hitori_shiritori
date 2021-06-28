@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,20 +102,28 @@ class MainActivity : ComponentActivity() {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight().padding(top = 500.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxHeight()
+                .padding(top = 500.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
                 onClick = {
                     if(textFieldValue.takeLast(1) != "ん" && textFieldValue.length > 1){
                         viewModel.updateTextField(viewModel.updateLastWord(textFieldValue).takeLast(1))
                         effectSound(correct)
-                    } else if(textFieldValue.length < 2) effectSound(not_hiragana)
+                    } else if(textFieldValue.length < 2){
+                        effectSound(not_hiragana)
+                    }
                     else effectSound(incorrect)
                           },
+                Modifier
+                    .width(160.dp)
+                    .padding(8.dp),
+                shape = RoundedCornerShape(20.dp),
+
 
             ){
-                Text(text = "Button")
+                Text(text = "Button", fontSize = 20.sp)
             }
         }
     }
