@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
     fun effectSound(is_correct: Int){
         val player = MediaPlayer.create(this, is_correct)
         player.start()
+        //音鳴らすとき、対応するイラストを表示する
     }
 
     fun convertToBitmap(resource: Int): Bitmap{
